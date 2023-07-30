@@ -3,6 +3,65 @@ var router = express.Router();
 const { mongoose, studentModel, mentorModel } = require("../dbSchema");
 const { mongodb, dbName, dbUrl } = require("../dbConfig");
 
+router.get("/fulllist",async(req,res)=>{
+  mongoose.set("strictQuery", false);
+  await mongoose.connect(dbUrl);
+  try{
+    let list = await mentorModel.find()
+    res.send({
+      statusCode:200,
+      data:list
+    })
+  }
+  catch(error){
+    console.log(error)
+    res.send({
+      statusCode:500,
+      message:"Internal Server Error",
+      error
+    })
+  }
+})
+
+router.get("/mentorlist",async(req,res)=>{
+  mongoose.set("strictQuery", false);
+  await mongoose.connect(dbUrl);
+  try{
+    let mentor = await mentorModel.find({},{mentorName:1, _id:0})
+    res.send({
+      statusCode:200,
+      data:mentor
+    })
+  }
+  catch(error){
+    console.log(error)
+    res.send({
+      statusCode:500,
+      message:"Internal Server Error",
+      error
+    })
+  }
+})
+router.get("/studentlist",async(req,res)=>{
+  mongoose.set("strictQuery", false);
+  await mongoose.connect(dbUrl);
+  try{
+    let studentName = await studentModel.find({},{studentName:1, _id:0})
+    res.send({
+      statusCode:200,
+      data:studentName
+    })
+  }
+  catch(error){
+    console.log(error)
+    res.send({
+      statusCode:500,
+      message:"Internal Server Error",
+      error
+    })
+  }
+})
+
 /* GET users listing. */
 //Getting the student name according to the mentor name
 router.get("/:mentorName", async (req, res) => {
@@ -23,24 +82,20 @@ router.get("/:mentorName", async (req, res) => {
   }
 });
 
+
 //Add mentor to the data base
 router.post("/addmentor", async (req, res) => {
   mongoose.set("strictQuery", false);
   await mongoose.connect(dbUrl);
   try {
-    console.log(req.body);
     let Mentorname = await mentorModel.findOne({
       mentorName: req.body.mentorName,
     });
-    console.log(Mentorname);
     if (Mentorname == null) {
-      //findOneAndUpdate({mentorName:req.body.mentorName},{$push:{studentsName:req.body.studentsName}})
       let students4 = req.body.studentsName;
-      console.log(students4.length);
 
       const commonfeild = { mentorName: req.body.mentorName };
       for (let i = 0; i < students4.length; i++) {
-        console.log(students4[i]);
         let studentModel2 = await studentModel.create({
           mentorName: req.body.mentorName,
           studentName: students4[i],
@@ -53,11 +108,10 @@ router.post("/addmentor", async (req, res) => {
       });
     } else {
       let students4 = req.body.studentsName;
-      console.log(students4.length);
+      console.log(students4+"99");
 
       const commonfeild = { mentorName: req.body.mentorName };
       for (let i = 0; i < students4.length; i++) {
-        console.log(students4[i]);
         let studentModel2 = await studentModel.create({
           mentorName: req.body.mentorName,
           studentName: students4[i],
@@ -128,6 +182,5 @@ router.post("/addstudent", async (req, res) => {
     res.send({ statusCode: 400, message: "Internal Server Error", error });
   }
 });
-router.put("/assignstudent", async (req, res) => {});
 
 module.exports = router;
