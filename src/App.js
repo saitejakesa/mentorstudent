@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Menu } from "antd";
+import {Route, Routes, useNavigate } from "react-router-dom";
+import Dashboard from "./dashboard/Dashboard";
+import Student from "./studentEnroll/Student";
+import Teacher from "./teacherenroll/Teacher";
 
-function App() {
+export default function App() {
+  const navigate = useNavigate();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{ display: "flex", flexDirection: "row" }}>
+      <Menu
+        style={{ width: "150px" }}
+        mode="inline"
+        onClick={({ key }) => {
+          navigate(key);
+        }}
+        items={[
+          { label: "Dashboard", key: "/" },
+          { label: "student", key: "/student" },
+          { label: "teacher", key: "/teacher" },
+        ]}
+      ></Menu>
+      <Content />
     </div>
   );
-}
+      }
 
-export default App;
+  function Content(){
+    return <div>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/student" element={<Student />}></Route>
+          <Route path="/teacher" element={<Teacher />}></Route>
+        </Routes>
+      </div>
+  }
+
