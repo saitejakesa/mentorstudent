@@ -1,5 +1,5 @@
 const env = {
-    apiurl: "http://localhost:9000",
+    apiurl: "https://mentorstudent-qfxc.onrender.com",
     frontendurl:"http://localhost:3000"
 }
 
